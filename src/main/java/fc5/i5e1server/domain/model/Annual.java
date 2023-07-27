@@ -1,6 +1,7 @@
 package fc5.i5e1server.domain.model;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
+@DynamicInsert
 public class Annual {
 
     @Id
@@ -33,6 +35,9 @@ public class Annual {
     @Column(nullable = false)
     @ColumnDefault("'REQUESTED'")
     private Status status;
+
+    @Column(nullable = false, length = 20)
+    private String summary;
 
     @Column(nullable = false)
     private String reason;
