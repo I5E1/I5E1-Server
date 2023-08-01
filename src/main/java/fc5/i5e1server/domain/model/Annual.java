@@ -1,5 +1,6 @@
 package fc5.i5e1server.domain.model;
 
+import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
@@ -8,8 +9,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @DynamicInsert
 public class Annual {
@@ -25,10 +28,10 @@ public class Annual {
     private Member member;
 
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
 
     @Enumerated(EnumType.STRING)
