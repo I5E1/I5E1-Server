@@ -1,6 +1,7 @@
 package fc5.i5e1server.domain.model;
 
 
+import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -10,6 +11,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @DynamicInsert
 public class Member {
