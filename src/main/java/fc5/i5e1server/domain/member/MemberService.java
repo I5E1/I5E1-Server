@@ -20,4 +20,14 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return new MemberInfoDTO(member);
     }
+    @Transactional
+    public MemberInfoDTO updateMember(Long id, MemberUpdateReqDTO request) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        //중복 확인?
+        member.updateTel((request.getTel()));
+        member.updatePassword(request.getPassword());  // 로그인 완료 후 수정
+        return new MemberInfoDTO(member);
+    }
 }
