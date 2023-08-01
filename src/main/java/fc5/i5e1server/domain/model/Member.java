@@ -44,4 +44,11 @@ public class Member {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public void updateTel(String tel) {
+        this.tel = tel;
+    }
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

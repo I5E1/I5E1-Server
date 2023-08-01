@@ -18,7 +18,6 @@ public class MemberService {
     public MemberInfoDTO getMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        // 로그인 검증 로직 필요?
         return new MemberInfoDTO(member);
     }
 }
