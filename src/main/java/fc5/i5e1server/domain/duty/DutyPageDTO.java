@@ -1,4 +1,4 @@
-package fc5.i5e1server.domain.annual;
+package fc5.i5e1server.domain.duty;
 
 import fc5.i5e1server.domain.model.Status;
 import lombok.Getter;
@@ -8,10 +8,8 @@ import java.sql.Date;
 
 @Getter
 @Setter
-public class AnnualPageDTO {
-    private Date startDate;
-    private Date endDate;
+public class DutyPageDTO {
+    private Date dutyDate;
     private Status status;
     private String reason;
-    private String summary;
 }
