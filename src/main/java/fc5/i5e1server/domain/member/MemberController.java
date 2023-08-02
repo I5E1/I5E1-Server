@@ -22,7 +22,6 @@ public class MemberController {
         MemberInfoDTO memberInfoDTO = memberService.getMember(1L);
         return APIDataResponse.of(HttpStatus.OK, "user data", memberInfoDTO);
     }
-
     @PutMapping("api/user")
     public ResponseEntity<APIDataResponse<Void>> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
         MemberInfoDTO memberInfoDTO = memberService.updateMember(1L, request);

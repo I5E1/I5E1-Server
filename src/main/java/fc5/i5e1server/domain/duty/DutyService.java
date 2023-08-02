@@ -1,5 +1,8 @@
 package fc5.i5e1server.domain.duty;
 
+import fc5.i5e1server.domain.annual.AnnualPageDTO;
+import fc5.i5e1server.domain.annual.AnnualRepository;
+import fc5.i5e1server.domain.model.Annual;
 import fc5.i5e1server.domain.model.Duty;
 import org.springframework.web.bind.annotation.RestController;
 
