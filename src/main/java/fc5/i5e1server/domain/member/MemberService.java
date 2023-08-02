@@ -30,8 +30,4 @@ public class MemberService {
         member.updatePassword(request.getPassword());  // 로그인 완료 후 수정
         return new MemberInfoDTO(member);
     }
-    public Member findByUserId(Long userId) {
-        return memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));
-    }
 }
