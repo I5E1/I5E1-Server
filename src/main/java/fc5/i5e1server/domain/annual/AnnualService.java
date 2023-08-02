@@ -22,7 +22,7 @@ public class AnnualService {
                     AnnualPageDTO dto = new AnnualPageDTO();
                     dto.setStartDate(annual.getStartDate());
                     dto.setEndDate(annual.getEndDate());
-                    dto.setStatus(annual.getStatus());
+                    dto.setStatus(String.valueOf(annual.getStatus()));
                     dto.setReason(annual.getReason());
                     dto.setSummary(annual.getSummary());
                     return dto;
