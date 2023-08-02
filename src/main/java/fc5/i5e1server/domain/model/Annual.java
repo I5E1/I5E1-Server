@@ -28,10 +28,10 @@ public class Annual {
     private Member member;
 
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
 
     @Enumerated(EnumType.STRING)
