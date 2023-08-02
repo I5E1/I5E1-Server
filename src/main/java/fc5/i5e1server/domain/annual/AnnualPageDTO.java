@@ -6,8 +6,8 @@ import lombok.Setter;
 
 import java.sql.Date;
 
-@Getter
 @Setter
+@Getter
 public class AnnualPageDTO {
     private Date startDate;
     private Date endDate;
