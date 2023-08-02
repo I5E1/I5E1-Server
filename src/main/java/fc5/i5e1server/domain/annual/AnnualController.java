@@ -20,6 +20,6 @@ public class AnnualController {
 
     @GetMapping("/api/annual/{userId}")
     public ResponseEntity<APIDataResponse<List<AnnualPageDTO>>> getMyPageAnnual(@PathVariable Long userId) {
-        return APIDataResponse.of(HttpStatus.OK, "myPage annual",annualService.getAnnual(userId));
+        return APIDataResponse.of(HttpStatus.OK, "myPage annual", annualService.getAnnual(userId));
     }
 }
