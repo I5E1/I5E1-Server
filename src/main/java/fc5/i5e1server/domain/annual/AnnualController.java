@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/annual")
 public class AnnualController {
 
     private final AnnualService annualService;
@@ -17,12 +18,12 @@ public class AnnualController {
         this.annualService = annualService;
     }
 
-    @GetMapping("/api/annual/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<APIDataResponse<List<AnnualPageDTO>>> getMyPageAnnual(@PathVariable Long userId) {
         return APIDataResponse.of(HttpStatus.OK, "마이페이지 연차 조회 성공", annualService.getAnnual(userId));
     }
 
-    @PostMapping("/api/annual")
+    @PostMapping
     public ResponseEntity<APIDataResponse<Annual>> createAnnual(
             @RequestBody AnnualCreateReqDTO annualCreateReqDTO,
             @RequestParam("memberId") Long memberId
@@ -30,7 +31,7 @@ public class AnnualController {
         Annual annual = annualService.createAnnual(annualCreateReqDTO, memberId);
         return APIDataResponse.empty(HttpStatus.CREATED, "연차 신청 성공");
     }
-    @PutMapping("/api/annual/{annualId}")
+    @PutMapping("/{annualId}")
     public ResponseEntity<APIDataResponse<Annual>> performAction(
             @RequestBody AnnualActionReqDTO annualActionReqDTO,
             @PathVariable Long annualId

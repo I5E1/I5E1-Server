@@ -3,12 +3,10 @@ package fc5.i5e1server.domain.member;
 import fc5.i5e1server.common.APIDataResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/user")
 public class MemberController {
 
     private final MemberService memberService;
@@ -17,13 +15,13 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/api/user")
+    @GetMapping
     public ResponseEntity<APIDataResponse<MemberInfoDTO>> myPage() {
         MemberInfoDTO memberInfoDTO = memberService.getMember(1L);
         return APIDataResponse.of(HttpStatus.OK, "마이페이지 조회 성공", memberInfoDTO);
     }
 
-    @PutMapping("api/user")
+    @PutMapping
     public ResponseEntity<APIDataResponse<Void>> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
         MemberInfoDTO memberInfoDTO = memberService.updateMember(1L, request);
         return APIDataResponse.empty(HttpStatus.OK, "마이페이지 정보 수정 성공");
