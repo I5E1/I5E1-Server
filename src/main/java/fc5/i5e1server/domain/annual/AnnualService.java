@@ -35,6 +35,7 @@ public class AnnualService {
                     dto.setStatus(annual.getStatus());
                     dto.setReason(annual.getReason());
                     dto.setSummary(annual.getSummary());
+                    dto.setAnnualId(annual.getId());
                     return dto;
                 })
                 .collect(Collectors.toList());
