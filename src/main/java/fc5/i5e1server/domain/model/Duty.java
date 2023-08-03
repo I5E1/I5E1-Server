@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,7 +27,7 @@ public class Duty {
     private Member member;
 
     @Column(nullable = false)
-    private Date dutyDate;
+    private LocalDate dutyDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,5 +1,7 @@
 package fc5.i5e1server.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import fc5.i5e1server.domain.annual.AnnualCreateReqDTO;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -7,8 +9,9 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Entity
@@ -23,13 +26,14 @@ public class Annual {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
     private Member member;
 
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
 
     @Enumerated(EnumType.STRING)
@@ -49,4 +53,18 @@ public class Annual {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public void updateByReq(AnnualCreateReqDTO annualCreateReqDTO) {
+        this.startDate = annualCreateReqDTO.getStartDate();
+        this.endDate = annualCreateReqDTO.getEndDate();
+        this.summary = annualCreateReqDTO.getSummary();
+        this.reason = annualCreateReqDTO.getReason();
+        this.status = Status.REQUESTED;
+        this.spentDays = (int) ChronoUnit.DAYS.between(annualCreateReqDTO.getStartDate(), annualCreateReqDTO.getEndDate()) + 1;
+        this.createdAt = LocalDateTime.now();
+    }
+    public void addMember(Member member) {
+        this.member = member;
+        member.getAnnuals().add(this);
+    }
 }

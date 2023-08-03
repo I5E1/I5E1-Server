@@ -20,12 +20,12 @@ public class MemberController {
     @GetMapping("/api/user")
     public ResponseEntity<APIDataResponse<MemberInfoDTO>> myPage() {
         MemberInfoDTO memberInfoDTO = memberService.getMember(1L);
-        return APIDataResponse.of(HttpStatus.OK, "user data", memberInfoDTO);
+        return APIDataResponse.of(HttpStatus.OK, "마이페이지 조회 성공", memberInfoDTO);
     }
 
     @PutMapping("api/user")
     public ResponseEntity<APIDataResponse<Void>> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
         MemberInfoDTO memberInfoDTO = memberService.updateMember(1L, request);
-        return APIDataResponse.empty(HttpStatus.OK, "updated user data");
+        return APIDataResponse.empty(HttpStatus.OK, "마이페이지 정보 수정 성공");
     }
 }

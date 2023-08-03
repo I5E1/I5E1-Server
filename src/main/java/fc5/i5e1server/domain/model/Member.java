@@ -1,11 +1,14 @@
 package fc5.i5e1server.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -46,5 +49,12 @@ public class Member {
     }
     public void updatePassword(String password) {
         this.password = password;
+    }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Annual> annuals = new ArrayList<>();
+
+    public void reduceAnnualCount(int spentDays) {
+        this.annualCount -= spentDays;
     }
 }

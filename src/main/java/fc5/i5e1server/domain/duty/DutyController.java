@@ -20,6 +20,6 @@ public class DutyController {
 
     @GetMapping("/api/duty/{userId}")
     public ResponseEntity<APIDataResponse<List<DutyPageDTO>>> getMyPageAnnual(@PathVariable Long userId) {
-        return APIDataResponse.of(HttpStatus.OK, "myPage duty", dutyService.getDuty(userId));
+        return APIDataResponse.of(HttpStatus.OK, "마이페이지 당직 조회 성공", dutyService.getDuty(userId));
     }
 }

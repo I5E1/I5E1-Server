@@ -19,14 +19,14 @@ public class MemberService {
     @Transactional
     public MemberInfoDTO getMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         return new MemberInfoDTO(member);
     }
     @Transactional
     //@Todo 로그인 완성후에 //Principal principal
     public MemberInfoDTO updateMember(Long id, MemberUpdateReqDTO request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
         //@Todo 유효성검사 tel,password
         //Tel 뺼지 이야기 안뺴면 tel, password 변경 분리
