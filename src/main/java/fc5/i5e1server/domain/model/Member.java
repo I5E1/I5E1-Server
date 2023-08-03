@@ -54,6 +54,10 @@ public class Member {
     @JsonManagedReference
     private List<Annual> annuals = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Duty> duty = new ArrayList<>();
+
     public void reduceAnnualCount(int spentDays) {
         this.annualCount -= spentDays;
     }
