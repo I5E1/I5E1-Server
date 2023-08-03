@@ -30,4 +30,12 @@ public class AnnualController {
         Annual annual = annualService.createAnnual(annualCreateReqDTO, memberId);
         return APIDataResponse.empty(HttpStatus.CREATED, "연차 신청 성공");
     }
+    @PutMapping("/api/annual/{annualId}")
+    public ResponseEntity<APIDataResponse<Annual>> performAction(
+            @RequestBody AnnualActionReqDTO annualActionReqDTO,
+            @PathVariable Long annualId
+    ) {
+        Annual annual = annualService.performAction(annualActionReqDTO, annualId);
+        return APIDataResponse.of(HttpStatus.OK, "연차 수정 성공", annual);
+    }
 }

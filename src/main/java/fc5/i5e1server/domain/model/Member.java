@@ -57,4 +57,7 @@ public class Member {
     public void reduceAnnualCount(int spentDays) {
         this.annualCount -= spentDays;
     }
+    public void increaseAnnualCount(int spentDays) {
+        this.annualCount += spentDays;
+    }
 }

@@ -2,6 +2,7 @@ package fc5.i5e1server.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import fc5.i5e1server.domain.annual.AnnualCreateReqDTO;
+import fc5.i5e1server.domain.annual.AnnualUpdateReqDTO;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -66,5 +67,24 @@ public class Annual {
     public void addMember(Member member) {
         this.member = member;
         member.getAnnuals().add(this);
+    }
+
+    public void update(AnnualUpdateReqDTO annualUpdateReqDTO) {
+        if (this.status != Status.REQUESTED) {
+            throw new IllegalStateException("Only annuals in REQUESTED status can be updated");
+        }
+        this.startDate = annualUpdateReqDTO.getStartDate();
+        this.endDate = annualUpdateReqDTO.getEndDate();
+        this.summary = annualUpdateReqDTO.getSummary();
+        this.reason = annualUpdateReqDTO.getReason();
+        this.spentDays = (int) ChronoUnit.DAYS.between(annualUpdateReqDTO.getStartDate(), annualUpdateReqDTO.getEndDate()) + 1;
+    }
+
+    public void cancel() {
+        if (this.status != Status.REQUESTED) {
+            throw new IllegalStateException("Only annuals in REQUESTED status can be cancelled");
+        }
+        this.status = Status.CANCELED;
+        this.member.increaseAnnualCount(this.spentDays);
     }
 }

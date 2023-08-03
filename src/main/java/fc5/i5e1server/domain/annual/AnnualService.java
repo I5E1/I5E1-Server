@@ -51,4 +51,20 @@ public class AnnualService {
 
         return annualRepository.save(annual);
     }
+
+    public Annual performAction(AnnualActionReqDTO annualActionReqDTO, Long annualId) {
+        Annual annual = annualRepository.findById(annualId)
+                .orElseThrow(() -> new IllegalArgumentException("No annual found with id " + annualId));
+
+        if ("update".equals(annualActionReqDTO.getAction())) {
+            annual.update(annualActionReqDTO);
+        } else if ("cancel".equals(annualActionReqDTO.getAction())) {
+            annual.cancel();
+        } else {
+            throw new IllegalArgumentException("Invalid action: " + annualActionReqDTO.getAction());
+        }
+
+        return annualRepository.save(annual);
+    }
+
 }
