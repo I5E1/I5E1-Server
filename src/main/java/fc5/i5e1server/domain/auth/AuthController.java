@@ -27,7 +27,8 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final CustomUserDetailService customUserDetailService;
 
-    @PostMapping("/authenticate")
+
+    @PostMapping("/login")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
 
         UserDetails userDetails = customUserDetailService.loadUserByUsername(loginDto.getEmail());
