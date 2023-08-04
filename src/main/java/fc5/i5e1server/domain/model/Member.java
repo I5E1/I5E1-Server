@@ -1,20 +1,21 @@
 package fc5.i5e1server.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+@Getter
 @Entity
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@ToString
 @Builder
 public class Member {
 
@@ -47,4 +48,25 @@ public class Member {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public void updateTel(String tel) {
+        this.tel = tel;
+    }
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Annual> annuals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Duty> duty = new ArrayList<>();
+
+    public void reduceAnnualCount(int spentDays) {
+        this.annualCount -= spentDays;
+    }
+    public void increaseAnnualCount(int spentDays) {
+        this.annualCount += spentDays;
+    }
 }
