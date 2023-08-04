@@ -1,17 +1,16 @@
 package fc5.i5e1server.domain.duty;
 
-import fc5.i5e1server.domain.annual.AnnualCreateReqDTO;
 import fc5.i5e1server.domain.member.MemberRepository;
-import fc5.i5e1server.domain.model.Annual;
 import fc5.i5e1server.domain.model.Duty;
 import fc5.i5e1server.domain.model.Member;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@Service
 public class DutyService {
     private final DutyRepository dutyRepository;
     private final MemberRepository memberRepository;
@@ -34,6 +33,9 @@ public class DutyService {
                 .collect(Collectors.toList());
     }
     public Duty createDuty(DutyCreateReqDTO dutyCreateReqDTO ,Long memberId) {
+        if(dutyCreateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("당직일은 오늘 날짜 이후여야 합니다. dutyDate = " + dutyCreateReqDTO.getDutyDate());
+        }
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 Id의 멤버를 찾을 수없음 Id = " + memberId));
         Duty duty = new Duty();
@@ -43,8 +45,11 @@ public class DutyService {
     }
 
     public Duty updateDuty(DutyUpdateReqDTO dutyUpdateReqDTO, Long dutyId) {
+        if(dutyUpdateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("당직일은 오늘 날짜 이후여야 합니다. dutyDate = " + dutyUpdateReqDTO.getDutyDate());
+        }
         Duty duty = dutyRepository.findById(dutyId)
-                .orElseThrow(() -> new IllegalArgumentException("No duty found with id " + dutyId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 당직은 존재하지않음 Id = " + dutyId));
         duty.update(dutyUpdateReqDTO);
         return dutyRepository.save(duty);
     }
