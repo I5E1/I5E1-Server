@@ -1,17 +1,21 @@
 package fc5.i5e1server.domain.model;
 
 
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
 @DynamicInsert
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
+@Builder
 public class Member {
 
     @Id
@@ -39,6 +43,7 @@ public class Member {
     @ColumnDefault(value = "15")
     private int annualCount;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
