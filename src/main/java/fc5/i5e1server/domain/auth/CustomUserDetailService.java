@@ -29,6 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     private org.springframework.security.core.userdetails.User createUser(Member member) {
         log.info("Member: {}", member);
-        return new org.springframework.security.core.userdetails.User(member.getName(), member.getPassword(), AuthoritiesProvider.getAuthorityCollection());
+        //User의 username대신 Member.id.toString()삽입
+        return new org.springframework.security.core.userdetails.User(member.getId().toString(), member.getPassword(), AuthoritiesProvider.getAuthorityCollection());
     }
 }
