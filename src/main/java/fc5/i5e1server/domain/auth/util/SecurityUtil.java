@@ -9,20 +9,20 @@ import java.util.Optional;
 
 @Slf4j
 public class SecurityUtil {
-    public static Optional<String> getCurrentUsername() {
+    public static Optional<Long> getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             log.info("Security Context에 인증 정보가 없습니다.");
             return Optional.empty();
         }
 
-        String username = null;
+        Long userId = null;
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-            username = springSecurityUser.getUsername();
+            userId = Long.valueOf(springSecurityUser.getUsername());
         } else if (authentication.getPrincipal() instanceof String) {
-            username = (String) authentication.getPrincipal();
+            userId = Long.valueOf((String) authentication.getPrincipal());
         }
-        return Optional.ofNullable(username);
+        return Optional.ofNullable(userId);
     }
 }
