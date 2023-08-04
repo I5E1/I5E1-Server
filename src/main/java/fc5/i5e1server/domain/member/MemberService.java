@@ -42,16 +42,13 @@ public class MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
-        //@Todo 유효성검사 tel,password
-        //Tel 뺼지 이야기 안뺴면 tel, password 변경 분리
-        //중복 확인?
         member.updateTel((request.getTel()));
         member.updatePassword(request.getPassword());  // 로그인 완료 후 수정
         return new MemberInfoDTO(member);
     }
     public Member findByUserId(Long userId) {
         return memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));
+                .orElseThrow(() -> new RuntimeException("존재하지않는 아이디 = " + userId));
     }
 
 }
