@@ -2,9 +2,10 @@ package fc5.i5e1server.domain.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +14,9 @@ import java.util.List;
 @Getter
 @Entity
 @DynamicInsert
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Member {
 
     @Id
@@ -40,6 +44,7 @@ public class Member {
     @ColumnDefault(value = "15")
     private int annualCount;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
