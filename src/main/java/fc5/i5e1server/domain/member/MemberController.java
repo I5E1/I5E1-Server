@@ -1,13 +1,12 @@
 package fc5.i5e1server.domain.member;
 
+import fc5.i5e1server.common.APIDataResponse;
 import fc5.i5e1server.domain.auth.dto.JoinDto;
 import fc5.i5e1server.domain.model.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import fc5.i5e1server.common.APIDataResponse;
-import org.springframework.http.HttpStatus;
-
 
 import javax.validation.Valid;
 

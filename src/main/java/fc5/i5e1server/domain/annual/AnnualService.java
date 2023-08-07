@@ -19,12 +19,12 @@ public class AnnualService {
     private final AnnualRepository annualRepository;
     private final MemberRepository memberRepository;
 
-    public List<AnnualPageDTO> getAnnual() {
+    public AnnualPageListDTO getAnnual() {
         Long memberId = SecurityUtil.getCurrentUserId()
                 .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
 
         List<Annual> annuals = annualRepository.findByMemberId(memberId);
-        return annuals.stream()
+        List<AnnualPageDTO> pageList = annuals.stream()
                 .map(annual -> {
                     AnnualPageDTO dto = new AnnualPageDTO();
                     dto.setStartDate(Date.valueOf(annual.getStartDate()));
@@ -36,6 +36,10 @@ public class AnnualService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+
+        AnnualPageListDTO annualPageListDTO = new AnnualPageListDTO();
+        annualPageListDTO.setAnnuals(pageList);
+        return annualPageListDTO;
     }
 
     public Annual createAnnual(AnnualCreateReqDTO annualCreateReqDTO) {
