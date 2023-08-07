@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/annual")
 public class AnnualController {
@@ -19,7 +17,7 @@ public class AnnualController {
     }
 
     @GetMapping
-    public ResponseEntity<APIDataResponse<List<AnnualPageDTO>>> getMyPageAnnual() {
+    public ResponseEntity<APIDataResponse<AnnualPageListDTO>> getMyPageAnnual() {
         return APIDataResponse.of(HttpStatus.OK, "마이페이지 연차 조회 성공", annualService.getAnnual());
     }
 

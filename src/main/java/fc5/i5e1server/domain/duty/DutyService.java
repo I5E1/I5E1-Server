@@ -18,12 +18,13 @@ public class DutyService {
     private final DutyRepository dutyRepository;
     private final MemberRepository memberRepository;
 
-    public List<DutyPageDTO> getDuty() {
+    public DutyPageListDTO getDuty() {
         Long memberId = SecurityUtil.getCurrentUserId()
                 .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
 
         List<Duty> dutyList = dutyRepository.findByMemberId(memberId);
-        return dutyList.stream()
+
+        List<DutyPageDTO> dutyPageDTOs = dutyList.stream()
                 .map(duty -> {
                     DutyPageDTO dto = new DutyPageDTO();
                     dto.setDutyDate(Date.valueOf(duty.getDutyDate()));
@@ -32,6 +33,11 @@ public class DutyService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+
+        DutyPageListDTO annualPageDTO = new DutyPageListDTO();
+        annualPageDTO.setDutyPageList(dutyPageDTOs);
+
+        return annualPageDTO;
     }
 
     public Duty createDuty(DutyCreateReqDTO dutyCreateReqDTO) {
