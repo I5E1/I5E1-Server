@@ -1,5 +1,6 @@
 package fc5.i5e1server.domain.auth;
 
+import fc5.i5e1server.common.APIErrorResponse;
 import fc5.i5e1server.domain.auth.dto.LoginDto;
 import fc5.i5e1server.domain.auth.dto.TokenDto;
 import fc5.i5e1server.domain.auth.jwt.JwtFilter;
@@ -29,9 +30,12 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<?> authorize(@Valid @RequestBody LoginDto loginDto) {
 
         UserDetails userDetails = customUserDetailService.loadUserByUsername(loginDto.getEmail());
+        if(!customUserDetailService.isSamePassword(Long.valueOf(userDetails.getUsername()), loginDto.getPassword())){
+            return APIErrorResponse.of(HttpStatus.BAD_REQUEST, "이메일 혹은 패스워드가 일치하지 않습니다.");
+        }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
                 "",
