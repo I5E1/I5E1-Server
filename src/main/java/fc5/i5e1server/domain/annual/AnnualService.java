@@ -1,8 +1,10 @@
 package fc5.i5e1server.domain.annual;
 
+import fc5.i5e1server.domain.auth.util.SecurityUtil;
 import fc5.i5e1server.domain.member.MemberRepository;
 import fc5.i5e1server.domain.model.Annual;
 import fc5.i5e1server.domain.model.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -11,17 +13,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AnnualService {
 
     private final AnnualRepository annualRepository;
     private final MemberRepository memberRepository;
 
-    public AnnualService(AnnualRepository annualRepository, MemberRepository memberRepository) {
-        this.annualRepository = annualRepository;
-        this.memberRepository = memberRepository;
-    }
+    public List<AnnualPageDTO> getAnnual() {
+        Long memberId = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
 
-    public List<AnnualPageDTO> getAnnual(Long memberId) {
         List<Annual> annuals = annualRepository.findByMemberId(memberId);
         return annuals.stream()
                 .map(annual -> {
@@ -37,7 +38,10 @@ public class AnnualService {
                 .collect(Collectors.toList());
     }
 
-    public Annual createAnnual(AnnualCreateReqDTO annualCreateReqDTO, Long memberId) {
+    public Annual createAnnual(AnnualCreateReqDTO annualCreateReqDTO) {
+        Long memberId = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
+
         if (annualCreateReqDTO.getStartDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("휴가 시작일은 오늘 날짜 이후여야 합니다.");
         }
@@ -78,5 +82,4 @@ public class AnnualService {
 
         return annualRepository.save(annual);
     }
-
 }

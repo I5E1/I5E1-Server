@@ -20,17 +20,16 @@ public class DutyController {
         this.dutyService = dutyService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<APIDataResponse<List<DutyPageDTO>>> getMyPageAnnual(@PathVariable Long userId) {
-        return APIDataResponse.of(HttpStatus.OK, "마이페이지 당직 조회 성공", dutyService.getDuty(userId));
+    @GetMapping
+    public ResponseEntity<APIDataResponse<List<DutyPageDTO>>> getMyPageAnnual() {
+        return APIDataResponse.of(HttpStatus.OK, "마이페이지 당직 조회 성공", dutyService.getDuty());
     }
 
     @PostMapping
     public ResponseEntity<APIDataResponse<Duty>> createDuty(
-            @RequestBody DutyCreateReqDTO dutyCreateReqDTO,
-            @RequestParam("memberId") Long memberId) {
+            @RequestBody DutyCreateReqDTO dutyCreateReqDTO) {
 
-        Duty duty = dutyService.createDuty(dutyCreateReqDTO , memberId);
+        Duty duty = dutyService.createDuty(dutyCreateReqDTO);
         return APIDataResponse.empty(HttpStatus.CREATED, "당직 신청 성공");
     }
 
