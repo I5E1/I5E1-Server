@@ -32,6 +32,7 @@ public class DutyService {
                 })
                 .collect(Collectors.toList());
     }
+
     public Duty createDuty(DutyCreateReqDTO dutyCreateReqDTO ,Long memberId) {
         if(dutyCreateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("당직일은 오늘 날짜 이후여야 합니다. dutyDate = " + dutyCreateReqDTO.getDutyDate());
