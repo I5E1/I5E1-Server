@@ -10,9 +10,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -64,6 +67,7 @@ public class Annual {
         this.spentDays = (int) ChronoUnit.DAYS.between(annualCreateReqDTO.getStartDate(), annualCreateReqDTO.getEndDate()) + 1;
         this.createdAt = LocalDateTime.now();
     }
+
     public void addMember(Member member) {
         this.member = member;
         member.getAnnuals().add(this);
@@ -71,13 +75,31 @@ public class Annual {
 
     public void update(AnnualUpdateReqDTO annualUpdateReqDTO) {
         if (this.status != Status.REQUESTED) {
-            throw new IllegalStateException("Only annuals in REQUESTED status can be updated");
+            throw new IllegalStateException("신청 중인 연차만 수정 가능합니다");
         }
         this.startDate = annualUpdateReqDTO.getStartDate();
         this.endDate = annualUpdateReqDTO.getEndDate();
         this.summary = annualUpdateReqDTO.getSummary();
         this.reason = annualUpdateReqDTO.getReason();
-        this.spentDays = (int) ChronoUnit.DAYS.between(annualUpdateReqDTO.getStartDate(), annualUpdateReqDTO.getEndDate()) + 1;
+        this.spentDays = calcSpentDays(this.startDate, this.endDate);
+    }
+
+    private int calcSpentDays(LocalDate startDate, LocalDate endDate) {
+        List<LocalDate> datesInRange = new ArrayList<>();
+        LocalDate start = startDate;
+
+        while (!start.isAfter(endDate)) {
+            datesInRange.add(start);
+            start = start.plusDays(1);
+        }
+
+        long numOfDaysWithoutWeekends = datesInRange.stream()
+                .filter(date -> {
+                    DayOfWeek dayOfWeek = date.getDayOfWeek();
+                    return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
+                }).count();
+
+        return (int) numOfDaysWithoutWeekends;
     }
 
     public void cancel() {
