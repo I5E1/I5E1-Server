@@ -1,5 +1,6 @@
 package fc5.i5e1server.domain.auth;
 
+import fc5.i5e1server.common.APIDataResponse;
 import fc5.i5e1server.common.APIErrorResponse;
 import fc5.i5e1server.domain.auth.dto.LoginDto;
 import fc5.i5e1server.domain.auth.dto.TokenDto;
@@ -33,7 +34,7 @@ public class AuthController {
     public ResponseEntity<?> authorize(@Valid @RequestBody LoginDto loginDto) {
 
         UserDetails userDetails = customUserDetailService.loadUserByUsername(loginDto.getEmail());
-        if(!customUserDetailService.isSamePassword(Long.valueOf(userDetails.getUsername()), loginDto.getPassword())){
+        if (!customUserDetailService.isSamePassword(Long.valueOf(userDetails.getUsername()), loginDto.getPassword())) {
             return APIErrorResponse.of(HttpStatus.BAD_REQUEST, "이메일 혹은 패스워드가 일치하지 않습니다.");
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -51,6 +52,6 @@ public class AuthController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer" + jwt);
 
-        return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+        return APIDataResponse.of(HttpStatus.OK, "로그인 성공", new TokenDto(jwt));
     }
 }
