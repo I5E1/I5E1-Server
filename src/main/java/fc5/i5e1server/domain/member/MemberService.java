@@ -36,6 +36,7 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         return new MemberInfoDTO(member);
     }
+
     @Transactional
     //@Todo 로그인 완성후에 //Principal principal
     public MemberInfoDTO updateMember(Long id, MemberUpdateReqDTO request) {
