@@ -1,8 +1,10 @@
 package fc5.i5e1server.domain.duty;
 
+import fc5.i5e1server.domain.auth.util.SecurityUtil;
 import fc5.i5e1server.domain.member.MemberRepository;
 import fc5.i5e1server.domain.model.Duty;
 import fc5.i5e1server.domain.model.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -11,16 +13,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DutyService {
     private final DutyRepository dutyRepository;
     private final MemberRepository memberRepository;
 
-    public DutyService(DutyRepository dutyRepository, MemberRepository memberRepository) {
-        this.dutyRepository = dutyRepository;
-        this.memberRepository = memberRepository;
-    }
+    public List<DutyPageDTO> getDuty() {
+        Long memberId = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
 
-    public List<DutyPageDTO> getDuty(Long memberId) {
         List<Duty> dutyList = dutyRepository.findByMemberId(memberId);
         return dutyList.stream()
                 .map(duty -> {
@@ -33,7 +34,10 @@ public class DutyService {
                 .collect(Collectors.toList());
     }
 
-    public Duty createDuty(DutyCreateReqDTO dutyCreateReqDTO ,Long memberId) {
+    public Duty createDuty(DutyCreateReqDTO dutyCreateReqDTO) {
+        Long memberId = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
+
         if(dutyCreateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("당직일은 오늘 날짜 이후여야 합니다. dutyDate = " + dutyCreateReqDTO.getDutyDate());
         }

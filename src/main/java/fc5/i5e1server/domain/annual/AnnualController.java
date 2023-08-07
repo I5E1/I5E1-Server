@@ -18,17 +18,16 @@ public class AnnualController {
         this.annualService = annualService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<APIDataResponse<List<AnnualPageDTO>>> getMyPageAnnual(@PathVariable Long userId) {
-        return APIDataResponse.of(HttpStatus.OK, "마이페이지 연차 조회 성공", annualService.getAnnual(userId));
+    @GetMapping
+    public ResponseEntity<APIDataResponse<List<AnnualPageDTO>>> getMyPageAnnual() {
+        return APIDataResponse.of(HttpStatus.OK, "마이페이지 연차 조회 성공", annualService.getAnnual());
     }
 
     @PostMapping
     public ResponseEntity<APIDataResponse<Annual>> createAnnual(
-            @RequestBody AnnualCreateReqDTO annualCreateReqDTO,
-            @RequestParam("memberId") Long memberId
+            @RequestBody AnnualCreateReqDTO annualCreateReqDTO
     ) {
-        Annual annual = annualService.createAnnual(annualCreateReqDTO, memberId);
+        Annual annual = annualService.createAnnual(annualCreateReqDTO);
         return APIDataResponse.empty(HttpStatus.CREATED, "연차 신청 성공");
     }
 

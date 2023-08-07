@@ -24,13 +24,13 @@ public class MemberController {
 
     @GetMapping("/user")
     public ResponseEntity<APIDataResponse<MemberInfoDTO>> myPage() {
-        MemberInfoDTO memberInfoDTO = memberService.getMember(1L);
+        MemberInfoDTO memberInfoDTO = memberService.getMember();
         return APIDataResponse.of(HttpStatus.OK, "마이페이지 조회 성공", memberInfoDTO);
     }
 
     @PutMapping("/user")
     public ResponseEntity<APIDataResponse<Void>> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
-        MemberInfoDTO memberInfoDTO = memberService.updateMember(1L, request);
+        memberService.updateMember(request);
         return APIDataResponse.empty(HttpStatus.OK, "마이페이지 정보 수정 성공");
     }
 

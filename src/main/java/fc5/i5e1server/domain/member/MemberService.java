@@ -1,6 +1,7 @@
 package fc5.i5e1server.domain.member;
 
 import fc5.i5e1server.domain.auth.dto.JoinDto;
+import fc5.i5e1server.domain.auth.util.SecurityUtil;
 import fc5.i5e1server.domain.model.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,22 +32,27 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    //@Todo update랑 상동
     @Transactional
-    public MemberInfoDTO getMember(Long id) {
+    public MemberInfoDTO getMember() {
+        Long id = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
+
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         return new MemberInfoDTO(member);
     }
 
+
     @Transactional
-    //@Todo 로그인 완성후에 //Principal principal
-    public MemberInfoDTO updateMember(Long id, MemberUpdateReqDTO request) {
+    public MemberInfoDTO updateMember(MemberUpdateReqDTO request) {
+        Long id = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
+
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
-        member.updateTel((request.getTel()));
-        member.updatePassword(request.getPassword());  // 로그인 완료 후 수정
+        member.updateTel(request.getTel());
+        member.updatePassword(request.getPassword());
         return new MemberInfoDTO(member);
     }
 
@@ -58,4 +64,6 @@ public class MemberService {
     public boolean isDuplicateEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
     }
+
+
 }
