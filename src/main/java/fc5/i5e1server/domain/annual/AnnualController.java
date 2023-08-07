@@ -37,6 +37,6 @@ public class AnnualController {
             @PathVariable Long annualId
     ) {
         Annual annual = annualService.performAction(annualActionReqDTO, annualId);
-        return APIDataResponse.empty(HttpStatus.OK, "연차 수정 성공");
+        return APIDataResponse.empty(HttpStatus.OK, "연차 수정 or 삭제 성공");
     }
 }
