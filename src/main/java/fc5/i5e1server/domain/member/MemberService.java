@@ -33,9 +33,7 @@ public class MemberService {
     public MemberInfoDTO getMember() {
         Long id = SecurityUtil.getCurrentUserId()
                 .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
-
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+        Member member = findByUserId(id);
         return new MemberInfoDTO(member);
     }
 
@@ -44,20 +42,19 @@ public class MemberService {
     public MemberInfoDTO updateMember(MemberUpdateReqDTO request) {
         Long id = SecurityUtil.getCurrentUserId()
                 .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
-
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
-
+        Member member = findByUserId(id);
         member.updateTel(request.getTel());
         member.updatePassword(request.getPassword());
         return new MemberInfoDTO(member);
     }
 
+    @Transactional
     public Member findByUserId(Long userId) {
         return memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지않는 아이디 = " + userId));
+                .orElseThrow(() -> new RuntimeException("존재하지않는 유저입니다."));
     }
 
+    @Transactional
     public boolean isDuplicateEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
     }
