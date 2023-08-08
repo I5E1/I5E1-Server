@@ -1,9 +1,9 @@
 package fc5.i5e1server.domain.duty;
 
-import fc5.i5e1server.domain.auth.util.SecurityUtil;
 import fc5.i5e1server.domain.member.MemberRepository;
 import fc5.i5e1server.domain.model.Duty;
 import fc5.i5e1server.domain.model.Member;
+import fc5.i5e1server.domain.util.ServiceUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +17,10 @@ import java.util.stream.Collectors;
 public class DutyService {
     private final DutyRepository dutyRepository;
     private final MemberRepository memberRepository;
+    private final ServiceUtil serviceUtil;
 
     public DutyPageListDTO getDuty() {
-        Long memberId = SecurityUtil.getCurrentUserId()
-                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
-
-        List<Duty> dutyList = dutyRepository.findByMemberId(memberId);
+        List<Duty> dutyList = dutyRepository.findByMemberId(serviceUtil.getUserId());
 
         List<DutyPageDTO> dutyPageDTOs = dutyList.stream()
                 .map(duty -> {
@@ -41,14 +39,12 @@ public class DutyService {
     }
 
     public Duty createDuty(DutyCreateReqDTO dutyCreateReqDTO) {
-        Long memberId = SecurityUtil.getCurrentUserId()
-                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
 
         if(dutyCreateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("당직일은 오늘 날짜 이후여야 합니다. dutyDate = " + dutyCreateReqDTO.getDutyDate());
         }
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 Id의 멤버를 찾을 수없음 Id = " + memberId));
+
+        Member member = serviceUtil.findByUserId(serviceUtil.getUserId());
         Duty duty = new Duty();
         duty.create(dutyCreateReqDTO);
         duty.addMember(member);
