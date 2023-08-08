@@ -58,6 +58,4 @@ public class MemberService {
     public boolean isDuplicateEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
     }
-
-
 }
