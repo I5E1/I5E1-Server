@@ -72,7 +72,7 @@ public class AnnualService {
     }
 
     @Transactional
-    public Annual performAction(AnnualActionReqDTO annualActionReqDTO, Long annualId) {
+    public Annual modfiyAnnual(AnnualActionReqDTO annualActionReqDTO, Long annualId) {
         Member member = serviceUtil.findByUserId(serviceUtil.getUserId());
 
         Annual annual = annualRepository.findById(annualId)
@@ -100,6 +100,7 @@ public class AnnualService {
             }
 
             annual.update(annualActionReqDTO);
+
         } else if ("cancel".equals(annualActionReqDTO.getAction())) {
             annual.cancel();
         } else {

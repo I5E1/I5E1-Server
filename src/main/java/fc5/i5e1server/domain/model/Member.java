@@ -2,13 +2,15 @@ package fc5.i5e1server.domain.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import fc5.i5e1server.domain.util.ServiceUtil;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
+
 @Getter
 public class AnnualCreateReqDTO {
     private LocalDate startDate;
