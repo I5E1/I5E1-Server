@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,8 @@ public class MemberService {
                 .email(joinDto.getEmail())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
                 .tel(joinDto.getTel())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
         return memberRepository.save(member);
     }
@@ -44,7 +47,8 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
         Member member = findByUserId(id);
         member.updateTel(request.getTel());
-        member.updatePassword(request.getPassword());
+        member.updatePassword(passwordEncoder.encode(request.getPassword()));
+        member.setUpdatedAt(LocalDateTime.now());
         return new MemberInfoDTO(member);
     }
 

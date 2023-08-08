@@ -1,6 +1,5 @@
 package fc5.i5e1server.domain.model;
 
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,7 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Member {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,7 +45,6 @@ public class Member {
     @ColumnDefault(value = "15")
     private int annualCount;
 
-    @CreatedDate
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -56,9 +52,15 @@ public class Member {
     public void updateTel(String tel) {
         this.tel = tel;
     }
+
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Annual> annuals = new ArrayList<>();
@@ -70,6 +72,7 @@ public class Member {
     public void reduceAnnualCount(int spentDays) {
         this.annualCount -= spentDays;
     }
+
     public void increaseAnnualCount(int spentDays) {
         this.annualCount += spentDays;
     }
