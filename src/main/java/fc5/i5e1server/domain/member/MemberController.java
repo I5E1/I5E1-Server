@@ -28,9 +28,8 @@ public class MemberController {
     }
 
     @PutMapping("/user")
-    public ResponseEntity<APIDataResponse<Void>> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
-        memberService.updateMember(request);
-        return APIDataResponse.empty(HttpStatus.OK, "마이페이지 정보 수정 성공");
+    public ResponseEntity<?> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
+        return APIDataResponse.of(HttpStatus.OK, "마이페이지 정보 수정 성공", memberService.updateMember(request));
     }
 
     @GetMapping("/check")

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,9 +51,15 @@ public class Member {
     public void updateTel(String tel) {
         this.tel = tel;
     }
+
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Annual> annuals = new ArrayList<>();
@@ -64,6 +71,7 @@ public class Member {
     public void reduceAnnualCount(int spentDays) {
         this.annualCount -= spentDays;
     }
+
     public void increaseAnnualCount(int spentDays) {
         this.annualCount += spentDays;
     }

@@ -47,7 +47,8 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
         Member member = findByUserId(id);
         member.updateTel(request.getTel());
-        member.updatePassword(request.getPassword());
+        member.updatePassword(passwordEncoder.encode(request.getPassword()));
+        member.setUpdatedAt(LocalDateTime.now());
         return new MemberInfoDTO(member);
     }
 
