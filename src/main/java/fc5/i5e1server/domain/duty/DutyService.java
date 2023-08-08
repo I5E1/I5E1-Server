@@ -1,12 +1,12 @@
 package fc5.i5e1server.domain.duty;
 
-import fc5.i5e1server.domain.auth.util.SecurityUtil;
-import fc5.i5e1server.domain.member.MemberRepository;
 import fc5.i5e1server.domain.model.Duty;
 import fc5.i5e1server.domain.model.Member;
+import fc5.i5e1server.domain.util.ServiceUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,13 +16,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DutyService {
     private final DutyRepository dutyRepository;
-    private final MemberRepository memberRepository;
+    private final ServiceUtil serviceUtil;
 
     public DutyPageListDTO getDuty() {
-        Long memberId = SecurityUtil.getCurrentUserId()
-                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
-
-        List<Duty> dutyList = dutyRepository.findByMemberId(memberId);
+        List<Duty> dutyList = dutyRepository.findByMemberId(serviceUtil.getUserId());
 
         List<DutyPageDTO> dutyPageDTOs = dutyList.stream()
                 .map(duty -> {
@@ -40,24 +37,32 @@ public class DutyService {
         return annualPageDTO;
     }
 
+    @Transactional
     public Duty createDuty(DutyCreateReqDTO dutyCreateReqDTO) {
-        Long memberId = SecurityUtil.getCurrentUserId()
-                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
-
-        if(dutyCreateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
+        if (dutyCreateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("당직일은 오늘 날짜 이후여야 합니다. dutyDate = " + dutyCreateReqDTO.getDutyDate());
         }
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 Id의 멤버를 찾을 수없음 Id = " + memberId));
+
+        if (serviceUtil.isDutyDateTaken(dutyCreateReqDTO.getDutyDate())) {
+            throw new IllegalArgumentException("당직일이 이미 신청되어 있습니다. dutyDate = " + dutyCreateReqDTO.getDutyDate());
+        }
+
+        Member member = serviceUtil.findByUserId(serviceUtil.getUserId());
+
         Duty duty = new Duty();
         duty.create(dutyCreateReqDTO);
         duty.addMember(member);
+
         return dutyRepository.save(duty);
     }
 
+    @Transactional
     public Duty updateDuty(DutyUpdateReqDTO dutyUpdateReqDTO, Long dutyId) {
         if(dutyUpdateReqDTO.getDutyDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("당직일은 오늘 날짜 이후여야 합니다. dutyDate = " + dutyUpdateReqDTO.getDutyDate());
+        }
+        if (serviceUtil.isDutyDateTaken(dutyUpdateReqDTO.getDutyDate())) {
+            throw new IllegalArgumentException("당직일이 이미 신청되어 있습니다. dutyDate = " + dutyUpdateReqDTO.getDutyDate());
         }
         Duty duty = dutyRepository.findById(dutyId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 당직은 존재하지않음 Id = " + dutyId));

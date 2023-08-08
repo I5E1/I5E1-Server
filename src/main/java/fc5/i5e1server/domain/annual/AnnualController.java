@@ -30,11 +30,11 @@ public class AnnualController {
     }
 
     @PutMapping("/{annualId}")
-    public ResponseEntity<APIDataResponse<Annual>> performAction(
+    public ResponseEntity<APIDataResponse<Annual>> modifyAnnual(
             @RequestBody AnnualActionReqDTO annualActionReqDTO,
             @PathVariable Long annualId
     ) {
-        Annual annual = annualService.performAction(annualActionReqDTO, annualId);
+        Annual annual = annualService.modfiyAnnual(annualActionReqDTO, annualId);
         return APIDataResponse.empty(HttpStatus.OK, "연차 수정 or 삭제 성공");
     }
 }
