@@ -30,7 +30,7 @@ public class AnnualController {
     }
 
     @PutMapping("/{annualId}")
-    public ResponseEntity<APIDataResponse<Annual>> performAction(
+    public ResponseEntity<APIDataResponse<Annual>> modifyAnnual(
             @RequestBody AnnualActionReqDTO annualActionReqDTO,
             @PathVariable Long annualId
     ) {

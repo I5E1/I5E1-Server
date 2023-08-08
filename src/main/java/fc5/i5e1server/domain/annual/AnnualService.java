@@ -1,9 +1,8 @@
 package fc5.i5e1server.domain.annual;
 
-import fc5.i5e1server.domain.auth.util.SecurityUtil;
-import fc5.i5e1server.domain.member.MemberRepository;
 import fc5.i5e1server.domain.model.Annual;
 import fc5.i5e1server.domain.model.Member;
+import fc5.i5e1server.domain.model.Status;
 import fc5.i5e1server.domain.util.ServiceUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,6 +41,7 @@ public class AnnualService {
         return annualPageListDTO;
     }
 
+    @Transactional
     public Annual createAnnual(AnnualCreateReqDTO annualCreateReqDTO) {
 
         if (annualCreateReqDTO.getStartDate().isAfter(annualCreateReqDTO.getEndDate())) {
@@ -71,11 +71,34 @@ public class AnnualService {
         return annualRepository.save(annual);
     }
 
+    @Transactional
     public Annual performAction(AnnualActionReqDTO annualActionReqDTO, Long annualId) {
+        Member member = serviceUtil.findByUserId(serviceUtil.getUserId());
+
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 연차는 존재하지않음 Id = " + annualId));
 
         if ("update".equals(annualActionReqDTO.getAction())) {
+            if (annual.getStatus() != Status.REQUESTED) {
+                throw new IllegalStateException("신청 중인 연차만 수정 가능합니다");
+            }
+
+            if (annualActionReqDTO.getStartDate().isAfter(annualActionReqDTO.getEndDate())) {
+                throw new IllegalArgumentException("시작일은 종료일 이후일 수 없습니다");
+            }
+
+            if (annualActionReqDTO.getStartDate().isBefore(LocalDate.now()) || annualActionReqDTO.getEndDate().isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException("시작일과 종료일은 현재보다 미래이어야 합니다");
+            }
+
+            if (serviceUtil.isDuplicatedAnnual(annualActionReqDTO.getStartDate(), annualActionReqDTO.getEndDate())) {
+                throw new IllegalArgumentException("신청한 날짜 범위가 기존의 연차와 겹칩니다");
+            }
+
+            if (annual.getSpentDays() > member.getAnnualCount()) {
+                throw new IllegalArgumentException("요청한 휴가 일수가 연차 일수를 초과합니다");
+            }
+
             annual.update(annualActionReqDTO);
         } else if ("cancel".equals(annualActionReqDTO.getAction())) {
             annual.cancel();

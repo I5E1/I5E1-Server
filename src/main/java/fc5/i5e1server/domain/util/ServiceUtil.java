@@ -3,8 +3,10 @@ package fc5.i5e1server.domain.util;
 import fc5.i5e1server.domain.annual.AnnualRepository;
 import fc5.i5e1server.domain.annual.AnnualService;
 import fc5.i5e1server.domain.auth.util.SecurityUtil;
+import fc5.i5e1server.domain.duty.DutyRepository;
 import fc5.i5e1server.domain.member.MemberRepository;
 import fc5.i5e1server.domain.model.Annual;
+import fc5.i5e1server.domain.model.Duty;
 import fc5.i5e1server.domain.model.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class ServiceUtil {
 
     private final MemberRepository memberRepository;
     private final AnnualRepository annualRepository;
+    private final DutyRepository dutyRepository;
 
 
     @Transactional
@@ -51,6 +54,16 @@ public class ServiceUtil {
             }
             if ((annual.getEndDate().isEqual(tempStartDate) || annual.getEndDate().isAfter(tempStartDate)) &&
                     (annual.getEndDate().isEqual(tempEndDate) || annual.getEndDate().isBefore(tempEndDate))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isDutyDateTaken(LocalDate dutyDate) {
+        List<Duty> dutyList = dutyRepository.findByMemberId(getUserId());
+
+        for (Duty duty : dutyList) {
+            if (duty.getDutyDate().isEqual(dutyDate)) {
                 return true;
             }
         }
