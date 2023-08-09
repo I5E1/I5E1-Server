@@ -43,7 +43,7 @@ public class Member {
 
     @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     @ColumnDefault(value = "15")
-    private int annualCount;
+    private Integer annualCount;
 
     private LocalDateTime createdAt;
 
