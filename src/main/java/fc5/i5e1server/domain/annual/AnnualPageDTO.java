@@ -14,4 +14,5 @@ public class AnnualPageDTO {
     private Status status;
     private String reason;
     private String summary;
+    private Long annualId;
 }

@@ -1,31 +1,41 @@
 package fc5.i5e1server.domain.member;
 
 import fc5.i5e1server.common.APIDataResponse;
+import fc5.i5e1server.domain.auth.dto.JoinDto;
+import fc5.i5e1server.domain.model.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
 public class MemberController {
-
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
+    @PostMapping("/join")
+    public ResponseEntity<Member> join(@Valid @RequestBody JoinDto joinDto) {
+        return ResponseEntity.ok(memberService.signUp(joinDto));
     }
 
-    @GetMapping("/api/user")
+    @GetMapping("/user")
     public ResponseEntity<APIDataResponse<MemberInfoDTO>> myPage() {
-        MemberInfoDTO memberInfoDTO = memberService.getMember(1L);
-        return APIDataResponse.of(HttpStatus.OK, "user data", memberInfoDTO);
+        MemberInfoDTO memberInfoDTO = memberService.getMember();
+        return APIDataResponse.of(HttpStatus.OK, "마이페이지 조회 성공", memberInfoDTO);
     }
 
-    @PutMapping("api/user")
-    public ResponseEntity<APIDataResponse<Void>> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
-        MemberInfoDTO memberInfoDTO = memberService.updateMember(1L, request);
-        return APIDataResponse.empty(HttpStatus.OK, "updated user data");
+    @PutMapping("/user")
+    public ResponseEntity<?> updateMyPage(@RequestBody MemberUpdateReqDTO request) {
+        return APIDataResponse.of(HttpStatus.OK, "마이페이지 정보 수정 성공", memberService.updateMember(request));
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> checkDuplicateEmail(@RequestParam String email) {
+        return APIDataResponse.empty(HttpStatus.OK, memberService.isDuplicateEmail(email) ?
+                "중복된 이메일입니다." :
+                "사용가능한 이메일입니다.");
     }
 }

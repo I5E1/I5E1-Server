@@ -1,42 +1,72 @@
 package fc5.i5e1server.domain.member;
 
+import fc5.i5e1server.domain.auth.dto.JoinDto;
+import fc5.i5e1server.domain.auth.util.SecurityUtil;
 import fc5.i5e1server.domain.model.Member;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.security.Principal;
+import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
-
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    @Transactional
+    public Member signUp(JoinDto joinDto) {
+        if (memberRepository.findByEmail(joinDto.getEmail()).orElse(null) != null) {
+            throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+        }
+        Member member = Member.builder()
+                .name(joinDto.getUsername())
+                .email(joinDto.getEmail())
+                .password(passwordEncoder.encode(joinDto.getPassword()))
+                .tel(joinDto.getTel())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        return memberRepository.save(member);
     }
 
-    //@Todo update랑 상동
     @Transactional
-    public MemberInfoDTO getMember(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public MemberInfoDTO getMember() {
+        Long id = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
+        Member member = findByUserId(id);
         return new MemberInfoDTO(member);
     }
-    @Transactional
-    //@Todo 로그인 완성후에 //Principal principal
-    public MemberInfoDTO updateMember(Long id, MemberUpdateReqDTO request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        //@Todo 유효성검사 tel,password
-        //Tel 뺼지 이야기 안뺴면 tel, password 변경 분리
-        //중복 확인?
-        member.updateTel((request.getTel()));
-        member.updatePassword(request.getPassword());  // 로그인 완료 후 수정
+
+    @Transactional
+    public MemberInfoDTO updateMember(MemberUpdateReqDTO request) {
+        Long id = SecurityUtil.getCurrentUserId()
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 없음"));
+        Member member = findByUserId(id);
+
+        if (request.isTelUpdated()) {
+            member.updateTel(request.getTel());
+        }
+
+        if (request.isPasswordUpdated()) {
+            member.updatePassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        member.setUpdatedAt(LocalDateTime.now());
         return new MemberInfoDTO(member);
     }
+
+    @Transactional
     public Member findByUserId(Long userId) {
         return memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));
+                .orElseThrow(() -> new RuntimeException("존재하지않는 유저입니다."));
+    }
+
+    @Transactional
+    public boolean isDuplicateEmail(String email) {
+        return memberRepository.findByEmail(email).isPresent();
     }
 }
